@@ -26,6 +26,7 @@ export const PermissionsProvider=({children}:{children:JSX.Element})=>{
 
     //Para ver el estado del permiso cada momento usando el listener
     useEffect(() => {
+        checkLocationPermission();
         //Para saber del estado de la aplicación como por ejemplo active, background
         AppState.addEventListener('change',state=>{
             //console.log(state)
