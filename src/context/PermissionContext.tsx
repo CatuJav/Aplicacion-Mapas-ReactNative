@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { AppState, Platform } from "react-native";
-import { check, PERMISSIONS, PermissionStatus, request } from "react-native-permissions";
+import { check, openSettings, PERMISSIONS, PermissionStatus, request } from "react-native-permissions";
 
 export interface PermissionState{
     locationStatus: PermissionStatus;
@@ -50,6 +50,12 @@ export const PermissionsProvider=({children}:{children:JSX.Element})=>{
            // permissionStatus=await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
             permissionStatus=await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
         }
+
+        if (permissions.locationStatus=='blocked') {
+            //Abre la ventana que modifica los permisos directamente
+            await openSettings()
+        }
+
         setPermissions({
             ...permissions,
             locationStatus:permissionStatus
