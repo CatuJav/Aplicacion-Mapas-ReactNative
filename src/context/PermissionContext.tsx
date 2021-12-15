@@ -1,6 +1,6 @@
-import React, { createContext, useState } from "react";
-import { Platform } from "react-native";
-import { PERMISSIONS, PermissionStatus, request } from "react-native-permissions";
+import React, { createContext, useEffect, useState } from "react";
+import { AppState, Platform } from "react-native";
+import { check, PERMISSIONS, PermissionStatus, request } from "react-native-permissions";
 
 export interface PermissionState{
     locationStatus: PermissionStatus;
@@ -24,6 +24,21 @@ export const PermissionsProvider=({children}:{children:JSX.Element})=>{
     
     const [permissions, setPermissions] = useState(permissionInitState);
 
+    //Para ver el estado del permiso cada momento usando el listener
+    useEffect(() => {
+        //Para saber del estado de la aplicación como por ejemplo active, background
+        AppState.addEventListener('change',state=>{
+            //console.log(state)
+
+            if (state!='active') {
+                return
+            }
+
+            checkLocationPermission();
+        })
+    }, [])
+    
+    
     const askLocationPermission =async()=>{
         //Condiciones para ver los permios
         let permissionStatus:PermissionStatus;
@@ -40,7 +55,22 @@ export const PermissionsProvider=({children}:{children:JSX.Element})=>{
             locationStatus:permissionStatus
         })
     }
-    const checkLocationPermission =()=>{}
+    const checkLocationPermission =async()=>{
+         //Condiciones para ver los permios
+         let permissionStatus:PermissionStatus;
+         if (Platform.OS==='ios') {
+             
+            permissionStatus=await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+            //permissionStatus=await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+         }else{
+            permissionStatus=await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+             //permissionStatus=await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+         }
+         setPermissions({
+             ...permissions,
+             locationStatus:permissionStatus
+         })
+    }
     
 
     return (
