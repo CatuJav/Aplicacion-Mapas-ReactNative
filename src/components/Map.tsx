@@ -11,6 +11,7 @@ export const Map = ({markers}:Props) => {
         <>
             <MapView
                 style={{ flex: 1 }}
+                showsUserLocation={true}
                 initialRegion={{
                     latitude: 37.78825,
                     longitude: -122.4324,
