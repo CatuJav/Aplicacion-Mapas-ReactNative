@@ -1,4 +1,5 @@
-import React from 'react'
+import Geolocation from '@react-native-community/geolocation';
+import React, { useEffect } from 'react'
 import MapView, { Marker } from 'react-native-maps'
 
 //Si en un futuro quiero varios marcadors
@@ -7,6 +8,18 @@ interface Props{
 }
 
 export const Map = ({markers}:Props) => {
+
+    useEffect(() => {
+        Geolocation.getCurrentPosition(
+            info => console.log(info),
+            (error)=>console.log(error),
+            {
+                distanceFilter:100,
+                enableHighAccuracy:true
+            });
+
+    }, [])
+
     return (
         <>
             <MapView
@@ -20,6 +33,7 @@ export const Map = ({markers}:Props) => {
                 }}
             >
                 <Marker
+            
                     image={require('../assests/custom-marker.png')}
                     coordinate={{
                         latitude:37.7885,
