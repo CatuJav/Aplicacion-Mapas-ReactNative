@@ -11,9 +11,25 @@ interface Props{
 
 export const Map = ({markers}:Props) => {
     
-    const {hasLocation,initialPosition,getCurrectLocation}=useLocation();
+    const {hasLocation,initialPosition,getCurrectLocation,followUserLocation, userLocation}=useLocation();
     
     const mapViewRef = useRef<MapView>();
+
+    useEffect(() => {
+        followUserLocation();
+        //TODO cancelar el seguimiento
+    }, [])
+
+    useEffect(() => {
+        const {latitude,longitude}=userLocation;
+        mapViewRef.current?.animateCamera({
+            center:{
+                latitude,longitude
+            },
+            zoom:14
+        });
+    }, [userLocation])
+
     const centerPosition=async()=>{
         const location = await getCurrectLocation();
         mapViewRef.current?.animateCamera({
