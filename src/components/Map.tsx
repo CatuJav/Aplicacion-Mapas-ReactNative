@@ -29,6 +29,9 @@ export const Map = ({markers}:Props) => {
     useEffect(() => {
         followUserLocation();
         //TODO cancelar el seguimiento
+        return ()=>{
+            stopFollowUserLocation();
+        }
     }, [])
 
     useEffect(() => {

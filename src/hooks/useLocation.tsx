@@ -20,11 +20,24 @@ export const useLocation = () => {
     })
 
     const watchId = useRef<number>();
+    //Par ver si esta desmontado el componente
+    const isMounted = useRef(true);
+    useEffect(() => {
+        isMounted.current=true;
+        //El return se llama es cuando ya esta desmontado el componente
+        return ()=>{
+        isMounted.current=false;
+        }
+    }, [])
+
 
     useEffect(() => {
       
         getCurrectLocation()
             .then(location=>{
+                if (!isMounted.current) {
+                    return;
+                }
                 setInitialPosition(location);
                 setUserLocation(location);
                 setRouteLines(routes=>[...routes, location]);
@@ -53,6 +66,7 @@ export const useLocation = () => {
     const followUserLocation = ()=>{
         watchId.current= Geolocation.watchPosition(                (
             { coords }) => {
+                if(!isMounted.current) return;
             const location:Location={
                 latitude:coords.latitude,
                 longitude:coords.longitude
