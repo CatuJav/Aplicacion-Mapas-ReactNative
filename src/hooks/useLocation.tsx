@@ -11,23 +11,35 @@ export const useLocation = () => {
         longitude:0
     });
     useEffect(() => {
-        Geolocation.getCurrentPosition(
-            ({ coords }) => {
-                setInitialPosition({
-                    latitude: coords.latitude,
-                    longitude: coords.longitude
-                });
+      
+        getCurrectLocation()
+            .then(location=>{
+                setInitialPosition(location);
                 setHasLocation(true);
-            },
-            (error) => console.log(error),
-            {
-                enableHighAccuracy: true
-            });
-
+            })
     }, [])
+
+    //Para mostrar la camara en base a la ubicacion
+    const getCurrectLocation=():Promise<Location>=>{
+        return new Promise((resolve,reject)=>{
+            Geolocation.getCurrentPosition(
+                ({ coords }) => {
+                    resolve({
+                        latitude: coords.latitude,
+                        longitude: coords.longitude
+                    });
+                  
+                },
+                (error) => reject({error}),
+                {
+                    enableHighAccuracy: true
+                });
+        })
+    }
 
     return {
         hasLocation,
-        initialPosition
+        initialPosition,
+        getCurrectLocation
     }
 }
